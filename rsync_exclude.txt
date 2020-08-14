@@ -1,0 +1,23 @@
+.env
+
+/.git
+/.well-known
+/.php_cs.cache
+/vendor
+/node_modules
+
+// for Laravel
+/bootstrap/cache/*
+/cache/*
+/storage/*
+/public/js/*
+/public/css/*
+/public/fonts/*
+/public/image/*
+/public/storage
+/public/mix-manifest.json
+
+// for cakephp
+/logs/*
+/tmp
+/config/Migrations/schema-dump-default.lock
