@@ -15,6 +15,17 @@ mode=${1^^}
 
 echo "Mode is ${mode}."
 
+# production の場合は一度確認を挟む
+if [ $mode == "PRODUCTION" ]; then
+  echo "---------- production !!!!!!!!!!!!!!!!! OK? ----------"
+  /bin/echo -n "Y/n: "
+  read ans
+  if [ $ans != "Y" ]; then
+    echo "Stop"
+    exit 0
+  fi
+fi
+
 # mode に合わせて動的に環境変数を読み込む
 rsync_remote_ssh_alias="RSYNC_${mode}_REMOTE_SSH_ALIAS"
 rsync_remote_dir="RSYNC_${mode}_REMOTE_DIR"
@@ -38,5 +49,6 @@ if [ -d $dir ]; then
     rsync $rsync_opt -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
   else
     echo "Stop"
+    exit 0
   fi
 fi
