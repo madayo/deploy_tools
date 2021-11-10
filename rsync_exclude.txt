@@ -22,3 +22,11 @@
 /logs/*
 /tmp
 /config/Migrations/schema-dump-default.lock
+
+// for ec-cube
+/var/cache/*
+/var/log/*
+/var/sessions/*
+
+// for xserver
+/.user.ini
