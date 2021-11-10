@@ -27,6 +27,7 @@
 /var/cache/*
 /var/log/*
 /var/sessions/*
+/html/upload/save_image/*
 
 // for xserver
 /.user.ini
