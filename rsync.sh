@@ -12,8 +12,15 @@ if [ $# -lt 1 ]; then
 fi
 # 第一引数を mode として大文字化
 mode=${1^^}
-
 echo "Mode is ${mode}."
+
+# 第二引数が force の場合のみ dry-run モードをスキップ
+force_run=${2:-dryrun}
+if [ $force_run == "force" ]; then
+  echo "force rsync"
+else
+  echo "dry-run"
+fi
 
 # production の場合は一度確認を挟む
 if [ $mode == "PRODUCTION" ]; then
@@ -40,15 +47,19 @@ fi
 
 rsync_opt="-v --checksum --archive --delete --exclude-from=rsync_exclude.txt"
 if [ -d $dir ]; then
-  echo "---------- dry-run ----------"
-  rsync $rsync_opt --dry-run -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
-  echo "---------- exec OK? ----------"
-  /bin/echo -n "Y/n: "
-  read ans
-  if [ $ans == "Y" ]; then
+  if [ $mode != "PRODUCTION" ] && [ $force_run == "force" ]; then
     rsync $rsync_opt -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
-  else
-    echo "Stop"
-    exit 0
+ else
+    echo "---------- dry-run ----------"
+    rsync $rsync_opt --dry-run -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
+    echo "---------- exec OK? ----------"
+    /bin/echo -n "Y/n: "
+    read ans
+    if [ $ans == "Y" ]; then
+      rsync $rsync_opt -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
+    else
+      echo "Stop"
+      exit 0
+    fi
   fi
 fi
