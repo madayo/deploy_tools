@@ -45,7 +45,11 @@ if [ -z "${rsync_remote_ssh_alias}" ] || [ -z "${rsync_remote_dir}" ]; then
   exit 1
 fi
 
-rsync_opt="-v --size-only --archive --delete --exclude-from=rsync_exclude.txt"
+### --size-only はファイルサイズしか見ないので、1文字だけ変更したときなどに変更が検知されないので避けること
+# --checksum ハッシュ値の比較。タイムスタンプは意識しない
+# --archive パーミッションを維持
+# --delete 転送元になくて、転送元にだけあるものを削除
+rsync_opt="-v --checksum --archive --delete --exclude-from=rsync_exclude.txt"
 
 # rsync をラップして、処理対象ファイルをわかりやすく表示してから rsync する
 function myrsync() {
