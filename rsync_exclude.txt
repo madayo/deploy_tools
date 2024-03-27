@@ -32,6 +32,3 @@
 // for xserver
 /.user.ini
 
-// サーバ上に git clone を設置しておき、rsync の結果と diff できるように
-// rsync で正しくデプロイ出来ないことがあった。多分タイムスタンプ関連でうまく判定できていなかったぽい
-/git_origin_dir
