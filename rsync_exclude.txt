@@ -3,6 +3,7 @@
 /.git
 /.well-known
 /.php_cs.cache
+/.php-cs-fixer.cache
 /vendor
 /node_modules
 
@@ -31,3 +32,4 @@
 
 // for xserver
 /.user.ini
+
