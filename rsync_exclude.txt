@@ -28,6 +28,12 @@
 /var/cache/*
 /var/log/*
 /var/sessions/*
+/html/upload/save_image/*
+/html/upload/temp_image/*
+/app/Plugin/.composer/cache/
+// plugin はサーバ上でアップデートかけるのでこっちでは管理しない。dev と本番でのバージョン合わせは管理画面で確認できるバージョンを見て手動で揃える
+/app/Plugin/*
+/app/proxy/*
 
 // for xserver
 /.user.ini
