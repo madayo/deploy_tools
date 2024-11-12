@@ -28,7 +28,7 @@ if [ $mode == "PRODUCTION" ]; then
   /bin/echo -n "Y/n: "
   read ans
   if [ $ans != "Y" ]; then
-    echo "Stop"
+    printf "\e[37;41;1m Stop \e[m\n"
     exit 0
   fi
 fi
@@ -72,7 +72,7 @@ function myrsync() {
 if [ -d $dir ]; then
   if [ $mode != "PRODUCTION" ] && [ $force_run == "force" ]; then
     myrsync $rsync_opt -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
- else
+  else
     echo "---------- dry-run ----------"
     myrsync $rsync_opt --dry-run -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
     echo "---------- exec OK? ----------"
@@ -81,8 +81,14 @@ if [ -d $dir ]; then
     if [ $ans == "Y" ]; then
       myrsync $rsync_opt -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
     else
-      echo "Stop"
+      printf "\e[37;41;1m Stop \e[m\n"
       exit 0
     fi
   fi
+fi
+
+if [ $mode == "PRODUCTION" ]; then
+  ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && /usr/bin/php8.2 composer.phar install --optimize-autoloader --no-dev && /usr/bin/php8.2 artisan migrate --force && /usr/bin/php8.2 artisan db:seed --force && /usr/bin/php8.2 artisan optimize && npm run prod"
+else
+  ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && /usr/bin/php8.2 composer.phar install && /usr/bin/php8.2 artisan migrate && /usr/bin/php8.2 artisan db:seed && /usr/bin/php8.2 artisan optimize:clear && npm run dev"
 fi
