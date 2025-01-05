@@ -23,7 +23,7 @@ else
 fi
 
 # production の場合は一度確認を挟む
-if [ $mode == "PRODUCTION" ]; then
+if [[ $mode == "PRODUCTION" || $mode == *_PRODUCTION ]]; then
   echo "---------- production !!!!!!!!!!!!!!!!! OK? ----------"
   /bin/echo -n "Y/n: "
   read ans
@@ -70,7 +70,7 @@ function myrsync() {
 
 
 if [ -d $dir ]; then
-  if [ $mode != "PRODUCTION" ] && [ $force_run == "force" ]; then
+  if [[ $mode != "PRODUCTION" && $mode != *_PRODUCTION && $force_run == "force" ]]; then
     myrsync $rsync_opt -e ssh $RSYNC_LOCAL_DIR ${rsync_remote_ssh_alias}:${rsync_remote_dir}
   else
     echo "---------- dry-run ----------"
@@ -87,7 +87,7 @@ if [ -d $dir ]; then
   fi
 fi
 
-if [ $mode == "PRODUCTION" ]; then
+if [[ $mode == "PRODUCTION" || $mode == *_PRODUCTION ]]; then
   ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && /usr/bin/php8.2 composer.phar install --optimize-autoloader --no-dev && /usr/bin/php8.2 artisan migrate --force && /usr/bin/php8.2 artisan db:seed --force && /usr/bin/php8.2 artisan optimize && npm run prod"
 else
   ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && /usr/bin/php8.2 composer.phar install && /usr/bin/php8.2 artisan migrate && /usr/bin/php8.2 artisan db:seed && /usr/bin/php8.2 artisan optimize:clear && npm run dev"
