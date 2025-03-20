@@ -88,7 +88,29 @@ if [ -d $dir ]; then
 fi
 
 if [[ $mode == "PRODUCTION" || $mode == *_PRODUCTION ]]; then
-  ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && /usr/bin/php8.2 composer.phar install --optimize-autoloader --no-dev && /usr/bin/php8.2 artisan migrate --force && /usr/bin/php8.2 artisan db:seed --force && /usr/bin/php8.2 artisan optimize && npm run prod"
+  ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && \
+    /usr/bin/php8.2 composer.phar install --optimize-autoloader --no-dev && \
+    /usr/bin/php8.2 artisan migrate --force && \
+    /usr/bin/php8.2 artisan db:seed --force && \
+    /usr/bin/php8.2 artisan optimize"
+
+  echo npm run prod も行いますか？
+  /bin/echo -n "Y/n: "
+  read ans
+  if [ "$ans" = "Y" ]; then
+    ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && npm run prod"
+  fi
 else
-  ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && /usr/bin/php8.2 composer.phar install && /usr/bin/php8.2 artisan migrate && /usr/bin/php8.2 artisan db:seed && /usr/bin/php8.2 artisan optimize:clear && npm run dev"
+  ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && \
+    /usr/bin/php8.2 composer.phar install && \
+    /usr/bin/php8.2 artisan migrate && \
+    /usr/bin/php8.2 artisan db:seed && \
+    /usr/bin/php8.2 artisan optimize:clear"
+
+  echo npm run dev も行いますか？
+  /bin/echo -n "Y/n: "
+  read ans
+  if [ "$ans" = "Y" ]; then
+    ssh $rsync_remote_ssh_alias "cd $rsync_remote_dir && npm run dev"
+  fi
 fi
