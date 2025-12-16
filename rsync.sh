@@ -12,7 +12,7 @@ if [ $# -lt 1 ]; then
 fi
 # 第一引数を mode として大文字化
 mode=${1^^}
-echo "Mode is ${mode}."
+printf "\e[36;40;1m=== Mode is ${mode} ===\e[m\n"
 
 # 第二引数が force の場合のみ dry-run モードをスキップ
 force_run=${2:-dryrun}
@@ -24,7 +24,7 @@ fi
 
 # production の場合は一度確認を挟む
 if [[ $mode == "PRODUCTION" || $mode == *_PRODUCTION ]]; then
-  echo "---------- production !!!!!!!!!!!!!!!!! OK? ----------"
+  printf "\e[35;40;1m---------- production !!!!!!!!!!!!!!!!! OK? ----------\e[m\n"
   /bin/echo -n "Y/n: "
   read ans
   if [ $ans != "Y" ]; then
